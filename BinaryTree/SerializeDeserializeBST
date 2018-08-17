@@ -1,0 +1,144 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.
+
+Design an algorithm to serialize and deserialize a binary search tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary search tree can be serialized to a string and this string can be deserialized to the original tree structure.
+
+The encoded string should be as compact as possible.
+
+Note: Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless.
+ */
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        StringBuffer buff = new StringBuffer();
+        serializeUtil(root, buff);
+        return buff.toString();
+        
+    }
+     private void serializeUtil(TreeNode root, StringBuffer buff) {
+        if (root == null) {
+            buff.append("%,");
+            return;
+        }
+
+        buff.append(root.val).append(",");
+        if (root.left != null || root.right != null) {
+            buff.append("$,");
+            serializeUtil(root.left, buff);
+            serializeUtil(root.right, buff);
+        } else {
+            return;
+        }
+
+    }
+    int index = 0;
+        /**
+     * Deserialize Tree using preorder DFS
+     * @param data
+     * @return
+     */
+    public TreeNode deserialize(String data) {
+        String[] input = data.split(",");
+        index = 0;
+        return deserializeUtil(input);
+    }
+
+
+ private TreeNode deserializeUtil(String input[]) {
+        if (index == input.length) {
+            return null;
+        }
+
+        if (input[index].equals("%")) {
+            index++;
+            return null;
+        }
+        TreeNode n = new TreeNode(Integer.parseInt(input[index]));
+        
+        if (index < input.length - 1) {
+            if (input[index + 1].equals("$")) {
+                index += 2;
+                n.left = deserializeUtil(input);
+                n.right = deserializeUtil(input);
+            } else {
+                index++;
+            }
+        }
+        return n;
+    }
+
+    /**
+     * Serialize tree using level order traversal.
+     */
+    public String serializeLevelOrder(TreeNode root) {
+        if (root == null) {
+            return "";
+        }
+
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.offerFirst(root);
+        StringBuffer buff = new StringBuffer();
+        while (!queue.isEmpty()) {
+            root = queue.pollFirst();
+            if (root == null) {
+                buff.append("%,");
+            } else {
+                buff.append(root.val).append(",");
+                queue.offer(root.left);
+                queue.offer(root.right);
+            }
+        }
+        for (int i = buff.length() - 1; i >= 0; i--) {
+            if (buff.charAt(i) == '%' || buff.charAt(i) == ',') {
+                buff.deleteCharAt(i);
+            } else {
+                break;
+            }
+        }
+        return buff.toString();
+    }
+
+    /**
+     * Deserialize Tree using level order traversal.
+     */
+    public TreeNode deserializeLevelOrder(String data) {
+        if (data == null || data.length() == 0) {
+            return null;
+        }
+        String[] input = data.split(",");
+        Deque<TreeNode> queue = new LinkedList<>();
+        int index = 0;
+        queue.offerFirst(new TreeNode(Integer.parseInt(input[index])));
+        TreeNode root = queue.peekFirst();
+        index++;
+        while (!queue.isEmpty()) {
+            TreeNode current = queue.pollFirst();
+            if (index < input.length && !input[index].equals("%")) {
+                current.left = new TreeNode(Integer.parseInt(input[index]));
+                queue.offerLast(current.left);
+            }
+            index++;
+            if (index < input.length && !input[index].equals("%")) {
+                current.right = new TreeNode(Integer.parseInt(input[index]));
+                queue.offerLast(current.right);
+            }
+            index++;
+        }
+        return root;
+    }
+
+
+    }
+
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.deserialize(codec.serialize(root));
