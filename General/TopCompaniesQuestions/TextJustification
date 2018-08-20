@@ -1,0 +1,124 @@
+/*
+68. Text Justification
+
+Given an array of words and a width maxWidth, format the text such that each line has exactly maxWidth characters and is fully (left and right) justified.
+
+You should pack your words in a greedy approach; that is, pack as many words as you can in each line. Pad extra spaces ' ' when necessary so that each line has exactly maxWidth characters.
+
+Extra spaces between words should be distributed as evenly as possible. If the number of spaces on a line do not divide evenly between words, the empty slots on the left will be assigned more spaces than the slots on the right.
+
+For the last line of text, it should be left justified and no extra space is inserted between words.
+
+Note:
+
+A word is defined as a character sequence consisting of non-space characters only.
+Each word's length is guaranteed to be greater than 0 and not exceed maxWidth.
+The input array words contains at least one word.
+Example 1:
+
+Input:
+words = ["This", "is", "an", "example", "of", "text", "justification."]
+maxWidth = 16
+Output:
+[
+   "This    is    an",
+   "example  of text",
+   "justification.  "
+]
+Example 2:
+
+Input:
+words = ["What","must","be","acknowledgment","shall","be"]
+maxWidth = 16
+Output:
+[
+  "What   must   be",
+  "acknowledgment  ",
+  "shall be        "
+]
+Explanation: Note that the last line is "shall be    " instead of "shall     be",
+             because the last line must be left-justified instead of fully-justified.
+             Note that the second line is also left-justified becase it contains only one word.
+Example 3:
+
+Input:
+words = ["Science","is","what","we","understand","well","enough","to","explain",
+         "to","a","computer.","Art","is","everything","else","we","do"]
+maxWidth = 20
+Output:
+[
+  "Science  is  what we",
+  "understand      well",
+  "enough to explain to",
+  "a  computer.  Art is",
+  "everything  else  we",
+  "do                  "
+]
+*/
+
+class Solution {
+     private List<String> res;
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        
+        res = new ArrayList<>();
+        // Start index for current line
+        int start = 0;
+        // number of word for current line
+        int count = 0;
+        // required width current line need, include one space between two words
+        int required = 0;
+        for (int i = 0; i < words.length; i++) {             
+            required += words[i].length() + ((i != start) ? 1 : 0);            
+            if (required > maxWidth) {
+                // from words[start] tp words[i - 1] is a valid line, add to res
+                addToRes(words, start, i - 1, count, required - words[i].length() - 1, maxWidth);
+                // clear
+                start = i;
+                count = 0;
+                required = 0;
+                // stay still, words[i] has not been used yet.
+                i--;
+            } else {
+                count++;
+            }
+        }
+        // handle last line
+        addToRes(words, start, words.length - 1, count, required, maxWidth);
+        return res;
+    }
+
+    private void addToRes(String[] words, int start, int end, int count, int required, int maxWidth) {
+        StringBuilder candidate = new StringBuilder("");
+        // one word case and last line case need left-justified.
+        if (count == 1 || end == words.length - 1) {
+            for (int i = start; i <= end; i++) {
+                candidate.append(words[i]);
+                if (i != end) {
+                    candidate.append(" ");
+                }
+            }
+            for (int j = 0; j < maxWidth - required; j++) {
+              candidate.append(" ");
+            }
+            res.add(candidate.toString());
+            return;
+        }
+        // every partition amortise the space, if there are extra, give them to left guys.
+        int spacePerPartition = (maxWidth - required) / (count - 1);
+        int spaceExtra = maxWidth - required - (count - 1) * spacePerPartition;
+        for (int i = start; i <= end; i++) {
+            candidate.append(words[i]);
+            if (i != end) {
+                candidate.append(" ");
+                for (int j = 0; j < spacePerPartition; j++) {
+                    candidate.append(" ");
+                }
+                if (i - start < spaceExtra) {
+                    candidate.append(" ");
+                }
+            }
+        }
+        res.add(candidate.toString());
+        
+    }
+}
