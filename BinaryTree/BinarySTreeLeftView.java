@@ -2,7 +2,8 @@ package Practise.BT;
 
 import java.util.LinkedList;
 import java.util.Queue;
-
+/**
+function to give binary tree left view */
 public class BinarySTreeLeftView <T extends Comparable<T>>{
 
 	private Node root;
