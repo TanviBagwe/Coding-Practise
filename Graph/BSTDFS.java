@@ -2,6 +2,8 @@ package com.tanvi.practise.Graph;
 
 import java.util.Stack;
 
+/**
+dfs bfs functions */
 public class BSTDFS {
 
 	public void DFS(Node root){
