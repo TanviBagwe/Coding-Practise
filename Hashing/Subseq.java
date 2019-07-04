@@ -1,5 +1,7 @@
 package Hashing;
 
+import java.util.HashMap;
+import java.util.Scanner;
 /*
 Given an array arr[] of positive integers. Find the length of the longest sub-sequence such that elements in the subsequence are consecutive integers, the consecutive numbers can be in any order.
 
