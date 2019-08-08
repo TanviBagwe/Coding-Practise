@@ -5,41 +5,40 @@ import java.util.LinkedList;
 
 public class DFS {
 
-    private int v;
+    private int V;
     private LinkedList<Integer> adj[];
 
+
     DFS(int v) {
-        this.v = v;
+        this.V = v;
         adj = new LinkedList[v];
-        for (int i = 0; i < v; i++) {
-            adj[i] = new LinkedList<Integer>();
+        for (int j = 0; j < v; j++) {
+            adj[j] = new LinkedList<Integer>();
         }
     }
 
-    void addEdge(int v, int u) {
-        adj[v].add(u);
+    public void addEdge(int u, int v) {
+        adj[u].add(v);
     }
 
-    void dfsTraverse(int node, boolean[] visited) {
+    public void dfsTraversal(int node, boolean[] visited) {
         visited[node] = true;
-        System.out.println(node);
-
-        Iterator<Integer> list = adj[node].listIterator();
-        while (list.hasNext()) {
-            int n = list.next();
-
-            if (!visited[n]) {
-                visited[n] = true;
-                dfsTraverse(n, visited);
+        System.out.println("node " + node);
+        Iterator<Integer> it = adj[node].listIterator();
+        while (it.hasNext()) {
+            int newNode = it.next();
+            if (!visited[newNode]) {
+                visited[newNode] = true;
+                dfsTraversal(newNode, visited);
             }
         }
     }
 
-    void DFSUtil(int node) {
-        boolean visited[] = new boolean[v];
-        dfsTraverse(node, visited);
-    }
+    public void DFSUtil(int node) {
+        boolean[] visited = new boolean[V];
+        dfsTraversal(node, visited);
 
+    }
     public static void main(String[] args) {
 
 

@@ -4,49 +4,34 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class BFS {
-    static void addEdge(ArrayList<ArrayList<Integer>> adj, int v, int u) {
-
+    public static void addEdge(ArrayList<ArrayList<Integer>> adj, int v, int u) {
         adj.get(v).add(u);
-
     }
 
-    static void BFSUtil(ArrayList<ArrayList<Integer>> adj, int v) {
-
-        boolean visited[] = new boolean[v + 1];
-
-        //first mark all visited as false
-        for (int i = 1; i <= v; i++) {
-            visited[i] = false;
-        }
-
-        LinkedList<Integer> queue = new LinkedList<Integer>();
-        //now traverse trough graph
+    public static void BFSUtil(ArrayList<ArrayList<Integer>> adj, int v) {
+        boolean[] visited = new boolean[v + 1];
         int s = 1;
+        LinkedList<Integer> queue = new LinkedList<Integer>();
         visited[s] = true;
         queue.add(s);
 
+        for (int i = 1; i < visited.length; i++) {
+            visited[i] = false;
+        }
         while (!queue.isEmpty()) {
             int top = queue.pop();
-
-            System.out.println(" out -->" + top);
-
-            ArrayList<Integer> listWithNode = adj.get(top);
-            if (null != listWithNode && !listWithNode.isEmpty()) {
-                // check if it is visited or not
-                for (int j = 0; j < listWithNode.size(); j++) {
-                    int newNode = listWithNode.get(j);
-                    if (!visited[newNode]) {
-                        visited[listWithNode.get(j)] = true;
-                        queue.add(listWithNode.get(j));
-                    }
+            System.out.println(" elements" + top);
+            ArrayList<Integer> list = adj.get(top);
+            for (int j = 0; j < list.size(); j++) {
+                int newNode = list.get(j);
+                if (!visited[newNode]) {
+                    visited[newNode] = true;
+                    queue.add(newNode);
                 }
-
             }
+
         }
-
     }
-
-
     public static void main(String[] args) {
         ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
 
