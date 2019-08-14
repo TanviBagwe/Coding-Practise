@@ -14,6 +14,11 @@ public class IsCycleRank {
 
     Edge edges[];
 
+    class Subset {
+        int parent;
+        int rank;
+    }
+
     public IsCycleRank(int v, int e) {
         this.V = v;
         this.E = e;
@@ -23,13 +28,6 @@ public class IsCycleRank {
             edges[i] = new Edge();
         }
     }
-
-    class Subset {
-        int parent;
-        int rank;
-    }
-
-
     public int find(Subset[] subsets, int u) {
         if (subsets[u].parent != u) {
             subsets[u].parent = find(subsets, subsets[u].parent);
@@ -37,9 +35,7 @@ public class IsCycleRank {
         return subsets[u].parent;
     }
 
-
     public void union(Subset[] subsets, int u, int v) {
-
         int uRoot = find(subsets, u);
         int vRoot = find(subsets, v);
 
@@ -48,38 +44,35 @@ public class IsCycleRank {
         } else if (subsets[vRoot].rank < subsets[uRoot].rank) {
             subsets[vRoot].parent = uRoot;
         } else {
-            subsets[vRoot].parent = uRoot;
-            subsets[uRoot].rank++;
+            subsets[uRoot].parent = vRoot;
+            subsets[vRoot].rank++;
         }
     }
 
 
     public boolean iscyle(IsCycleRank g) {
+        int node = g.V;
+        int links = g.E;
 
-        int nodes = g.V;
-        int lines = g.E;
+        Subset[] subsets = new Subset[node];
 
-        Subset[] subsets = new Subset[nodes];
-        for (int v = 0; v < nodes; v++) {
+        for (int v = 0; v < node; v++) {
             subsets[v] = new Subset();
             subsets[v].parent = v;
             subsets[v].rank = 0;
         }
 
-        for (int j = 0; j < lines; j++) {
-
-            int xRoot = find(subsets, g.edges[j].src);
-            int yRoot = find(subsets, g.edges[j].dest);
+        for (int i = 0; i < links; i++) {
+            int xRoot = find(subsets, g.edges[i].src);
+            int yRoot = find(subsets, g.edges[i].dest);
 
             if (xRoot == yRoot) {
                 return true;
             }
-
             union(subsets, xRoot, yRoot);
         }
         return false;
     }
-
     public static void main(String[] args) {
 
         IsCycleRank graph = new IsCycleRank(3, 3);
